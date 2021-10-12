@@ -1,6 +1,8 @@
 import 'package:flash_chat/screens/components/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../algorithms/a_star.dart';
+import 'dart:collection';
 
 int gridHeight = 20;
 int gridWidth = 10;
@@ -12,11 +14,12 @@ List<Color> gridTileColors = [
   Colors.white,
   Colors.black,
   Colors.green,
-  Colors.red
+  Colors.red,
+  Colors.blue
 ];
 List<List<int>> gridState;
 
-void initGrid() {
+void eraseGrid() {
   gridState = [List.filled(gridWidth, 0)];
   for (int i = 1; i < gridHeight; i++) {
     gridState.add(List.filled(gridWidth, 0));
@@ -32,7 +35,7 @@ List<Expanded> generateGridList(int gridHeight, int gridWidth) {
     }
     list.add(Expanded(child: Row(children: temp)));
   }
-  initGrid();
+  // initGrid();
   return list;
 }
 
@@ -182,6 +185,17 @@ class Visualizer extends StatefulWidget {
 }
 
 class _VisualizerState extends State<Visualizer> {
+  List<Expanded> list = [];
+  @override
+  void initState() {
+    super.initState();
+    print('init called');
+    gridState = [List.filled(gridWidth, 0)];
+    for (int i = 1; i < gridHeight; i++) {
+      gridState.add(List.filled(gridWidth, 0));
+    }
+  }
+
   Widget build(BuildContext context) {
     const title = 'Visualizer';
     return MaterialApp(
@@ -200,8 +214,30 @@ class _VisualizerState extends State<Visualizer> {
             flex: 1,
           ),
           Expanded(
-            child: Column(
-              children: generateGridList(gridHeight, gridWidth),
+            child: Container(
+              child: Column(
+                children: generateGridList(gridHeight, gridWidth),
+              ),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  top: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  left: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  right: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                ),
+              ),
             ),
             flex: 8,
           ),
@@ -214,6 +250,18 @@ class _VisualizerState extends State<Visualizer> {
                     colour: Colors.lightBlueAccent,
                     onPressed: () {
                       print(gridState);
+                      Queue<Tile> path = aStar2D(Maze.parse(gridState));
+                      Tile pathTile;
+                      path.removeFirst();
+                      path.removeLast();
+                      while (path.isNotEmpty) {
+                        pathTile = path.removeLast();
+                        print('${pathTile.x} , ${pathTile.y}');
+                        setState(() {
+                          gridState[pathTile.y][pathTile.x] = 4;
+                        });
+                        Future.delayed(Duration(seconds: 5), () {});
+                      }
                     },
                   ),
                 ),
@@ -223,8 +271,10 @@ class _VisualizerState extends State<Visualizer> {
                     colour: Colors.deepOrangeAccent,
                     onPressed: () {
                       setState(() {
-                        initGrid();
-                        print(gridState);
+                        eraseGrid();
+                        startDefined = false;
+                        stopDefined = false;
+                        print('grid erased');
                       });
                     },
                   ),
