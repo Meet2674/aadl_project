@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
+import 'package:flash_chat/models/GridStateManagement.dart';
+
 class Maze {
   List<List<Tile>> tiles;
   Tile start;
@@ -97,13 +99,17 @@ double heuristic(Tile tile, Tile goal) {
 
 /// This algorithm works only for 2D grids. There is a lot of room to optimize
 /// this further.
-Queue<Tile> aStar2D(Maze maze) {
+
+void justWait({int numberOfmilliSeconds}) async {
+  await Future.delayed(Duration(milliseconds: numberOfmilliSeconds));
+}
+
+void aStar2D(Maze maze, GridStateManager gridStateManager) async {
   final map = maze.tiles;
   final start = maze.start;
   final goal = maze.goal;
   final numRows = map.length;
   final numColumns = map[0].length;
-
   final open = <Tile>[];
   final closed = <Tile>[];
 
@@ -129,10 +135,17 @@ Queue<Tile> aStar2D(Maze maze) {
       // Go up the chain to recreate the path
       while (currentTile._parentIndex != -1) {
         currentTile = closed[currentTile._parentIndex];
+        //// error can be here
+        if (currentTile._parentIndex == -1) {
+          break;
+        }
         path.addFirst(currentTile);
+        await justWait(numberOfmilliSeconds: 50);
+        gridStateManager.drawPathTiles(currentTile.y, currentTile.x, 4);
       }
 
-      return path;
+      // return path;
+      break;
     }
 
     open.removeAt(bestTileIndex);
@@ -149,6 +162,10 @@ Queue<Tile> aStar2D(Maze maze) {
                 ||
                 (goal.x == newX && goal.y == newY)) &&
             (newX == currentTile.x || newY == currentTile.y)) {
+          if (currentTile != maze.start) {
+            gridStateManager.drawPathTiles(currentTile.y, currentTile.x, 5);
+            await justWait(numberOfmilliSeconds: 7); // added to get slight lag
+          }
           // or the new node is our destination
           //See if the node is already in our closed list. If so, skip it.
           var foundInClosed = false;
@@ -189,5 +206,5 @@ Queue<Tile> aStar2D(Maze maze) {
     }
   }
 
-  return Queue<Tile>();
+  // return Queue<Tile>();
 }

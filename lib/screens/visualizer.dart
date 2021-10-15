@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../algorithms/a_star.dart';
 import 'dart:collection';
+import '../models/GridStateManagement.dart';
+import 'package:provider/provider.dart';
 
 int gridHeight = 20;
 int gridWidth = 10;
@@ -15,7 +17,8 @@ List<Color> gridTileColors = [
   Colors.black,
   Colors.green,
   Colors.red,
-  Colors.blue
+  Colors.blue,
+  Colors.lightGreenAccent
 ];
 List<List<int>> gridState;
 
@@ -52,42 +55,20 @@ class _GridTileState extends State<GridTile> {
   Widget build(BuildContext context) {
     var x1 = widget.x;
     var y1 = widget.y;
-    return GestureDetector(
-      onTap: () {
-        print('x = $x1 ,y = $y1 was tapped');
-        if (gridState[x1][y1] == 2 && tileType == 0 || tileType == 1) {
-          startDefined = false;
-        }
-        if (gridState[x1][y1] == 3 && tileType == 0 || tileType == 1) {
-          stopDefined = false;
-        }
-        if (startDefined && tileType == 2) {
-          print('Can\'t have multiple start nodes');
-        } else if (stopDefined && tileType == 3) {
-          print('Can\'t have multiple stop nodes');
-        } else {
-          if (tileType == 2) {
-            if (gridState[x1][y1] == 3) {
-              stopDefined = false;
-            }
-            startDefined = true;
-          }
-          if (tileType == 3) {
-            if (gridState[x1][y1] == 2) {
-              startDefined = false;
-            }
-            stopDefined = true;
-          }
-          setState(() {
-            gridState[x1][y1] = tileType;
-          });
-        }
+    return Consumer<GridStateManager>(
+      builder: (context, gridStateManager, child) {
+        return GestureDetector(
+          onTap: () {
+            gridStateManager.updateGridTileState(x1, y1, tileType);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 0.3),
+              color: gridTileColors[gridStateManager.gridState[x1][y1]],
+            ),
+          ),
+        );
       },
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 0.3),
-            color: gridTileColors[gridState[x1][y1]]),
-      ),
     );
   }
 }
@@ -198,91 +179,80 @@ class _VisualizerState extends State<Visualizer> {
 
   Widget build(BuildContext context) {
     const title = 'Visualizer';
-    return MaterialApp(
-      title: title,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            title,
-            style: TextStyle(color: Colors.black),
+    return ChangeNotifierProvider(
+      create: (context) => GridStateManager(gridHeight: 20, gridWidth: 10),
+      child: MaterialApp(
+        title: title,
+        home: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              title,
+              style: TextStyle(color: Colors.black),
+            ),
+            backgroundColor: Colors.white,
           ),
-          backgroundColor: Colors.white,
+          body: Column(children: [
+            Expanded(
+              child: VisualizerMenu(),
+              flex: 1,
+            ),
+            Expanded(
+              child: Container(
+                child: Column(
+                  children: generateGridList(gridHeight, gridWidth),
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    top: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    left: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    right: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                  ),
+                ),
+              ),
+              flex: 8,
+            ),
+            Expanded(
+              child: Consumer<GridStateManager>(
+                  builder: (context, gridStateManager, child) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: RoundedButton(
+                        title: 'Visualize!',
+                        colour: Colors.lightBlueAccent,
+                        onPressed: () {
+                          gridStateManager.visualizeAstar();
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RoundedButton(
+                        title: 'Erase',
+                        colour: Colors.deepOrangeAccent,
+                        onPressed: () {
+                          gridStateManager.eraseGrid();
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ]),
         ),
-        body: Column(children: [
-          Expanded(
-            child: VisualizerMenu(),
-            flex: 1,
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                children: generateGridList(gridHeight, gridWidth),
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                  top: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                  left: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                  right: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-              ),
-            ),
-            flex: 8,
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: RoundedButton(
-                    title: 'Visualize!',
-                    colour: Colors.lightBlueAccent,
-                    onPressed: () {
-                      print(gridState);
-                      Queue<Tile> path = aStar2D(Maze.parse(gridState));
-                      Tile pathTile;
-                      path.removeFirst();
-                      path.removeLast();
-                      while (path.isNotEmpty) {
-                        pathTile = path.removeLast();
-                        print('${pathTile.x} , ${pathTile.y}');
-                        setState(() {
-                          gridState[pathTile.y][pathTile.x] = 4;
-                        });
-                        Future.delayed(Duration(seconds: 5), () {});
-                      }
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: RoundedButton(
-                    title: 'Erase',
-                    colour: Colors.deepOrangeAccent,
-                    onPressed: () {
-                      setState(() {
-                        eraseGrid();
-                        startDefined = false;
-                        stopDefined = false;
-                        print('grid erased');
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ]),
       ),
     );
   }
