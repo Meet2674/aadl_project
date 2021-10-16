@@ -180,7 +180,8 @@ class _VisualizerState extends State<Visualizer> {
   Widget build(BuildContext context) {
     const title = 'Visualizer';
     return ChangeNotifierProvider(
-      create: (context) => GridStateManager(gridHeight: 20, gridWidth: 10),
+      create: (context) =>
+          GridStateManager(gridHeight: gridHeight, gridWidth: gridWidth),
       child: MaterialApp(
         title: title,
         home: Scaffold(
@@ -234,7 +235,11 @@ class _VisualizerState extends State<Visualizer> {
                         title: 'Visualize!',
                         colour: Colors.lightBlueAccent,
                         onPressed: () {
-                          gridStateManager.visualizeAstar();
+                          if (algo == 'A*') {
+                            gridStateManager.visualizeAstar();
+                          } else {
+                            gridStateManager.visualizeDijkstras();
+                          }
                         },
                       ),
                     ),

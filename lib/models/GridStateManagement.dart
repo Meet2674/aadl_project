@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../algorithms/a_star.dart';
+import '../algorithms/dijkstra.dart';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
@@ -11,8 +12,7 @@ class GridStateManager extends ChangeNotifier {
   bool stopDefined = false;
   List<List<int>> gridState;
 
-  GridStateManager({this.gridHeight: 20, this.gridWidth: 10}) {
-    print("HERE!!");
+  GridStateManager({this.gridHeight, this.gridWidth}) {
     gridState = [List.filled(gridWidth, 0)];
     for (int i = 1; i < gridHeight; i++) {
       gridState.add(List.filled(gridWidth, 0));
@@ -62,13 +62,11 @@ class GridStateManager extends ChangeNotifier {
 
   void drawPathTiles(int x, int y, int tileType) async {
     gridState[x][y] = tileType;
-    print('drawing tiles');
     notifyListeners();
   }
 
   void visualizeAstar() async {
     aStar2D(Maze.parse(gridState), this);
-    print(this.gridState);
     // Tile pathTile;
     // path.removeFirst();
     // path.removeLast();
@@ -79,5 +77,10 @@ class GridStateManager extends ChangeNotifier {
     //   // gridState[pathTile.y][pathTile.x] = 4;
     //   // notifyListeners();
     // }
+  }
+
+  void visualizeDijkstras() {
+    Dijkstra d = new Dijkstra(this);
+    print(d.findPathFromGraph(d.parse(gridState)));
   }
 }
