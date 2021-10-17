@@ -58,7 +58,7 @@ class Dijkstra {
     return graph;
   }
 
-  Map singleSourceShortestPaths(graph, s, end) {
+  void singleSourceShortestPaths(graph, s, end) async {
     /// Predecessor map for each node that has been encountered.
     /// node ID => predecessor node ID
 
@@ -120,13 +120,25 @@ class Dijkstra {
           }
         }
       });
+      await justWait(numberOfmilliSeconds: 50);
     }
 
     if (end != null && costs[end] == null) {
       print('Could not find a path');
     }
 
-    return predecessors;
+    // return predecessors;
+
+    var nodes = [];
+    var u1 = end;
+    while (u1 != null) {
+      gridStateManager.drawPathTiles(u1.x, u1.y, 4);
+      await justWait(numberOfmilliSeconds: 100);
+      nodes.add(u1);
+      u1 = predecessors[u1];
+    }
+    // if (nodes.length == 1) return [];
+    // return nodes.reversed.toList();
   }
 
   /// Extract shortest path from predecessor list
@@ -178,12 +190,12 @@ class Dijkstra {
   ///
   /// List like:
   /// [[0, 2], [3, 4], [0, 6], [5, 6], [2, 3], [0, 1], [0, 4], [0, 113], [113, 114], [111, 112]]
-  List findPathFromPairsList(List<List> list, dynamic start, dynamic end) {
-    var graph = pairsListToGraphMap(list);
-    var predecessors = singleSourceShortestPaths(graph, start, end);
-
-    return extractShortestPathFromPredecessorList(predecessors, end);
-  }
+  // List findPathFromPairsList(List<List> list, dynamic start, dynamic end) {
+  //   var graph = pairsListToGraphMap(list);
+  //   var predecessors = singleSourceShortestPaths(graph, start, end);
+  //
+  //   return extractShortestPathFromPredecessorList(predecessors, end);
+  // }
 
   /// Return the shortest path
   ///
@@ -191,10 +203,11 @@ class Dijkstra {
   ///
   /// Graph like:
   /// {0: {2: 1, 6: 1, 1: 1, 4: 1, 113: 1}, 2: {0: 1, 3: 1}, 6: {0: 1, 5: 1}, 1: {0: 1}, 4: {0: 1, 3: 1}, 113: {0: 1, 114: 1}, 3: {2: 1, 4: 1}, 5: {6: 1}, 114: {113: 1}, 111: {112: 1}, 112: {111: 1}}
-  List findPathFromGraph(Map graph) {
-    var predecessors = singleSourceShortestPaths(graph, this.start, this.stop);
+  void findPathFromGraph(Map graph) {
+    /*var predecessors = */ singleSourceShortestPaths(
+        graph, this.start, this.stop);
 
-    return extractShortestPathFromPredecessorList(predecessors, this.stop);
+    // return extractShortestPathFromPredecessorList(predecessors, this.stop);
   }
 }
 

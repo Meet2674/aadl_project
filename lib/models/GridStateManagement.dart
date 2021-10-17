@@ -61,8 +61,10 @@ class GridStateManager extends ChangeNotifier {
   }
 
   void drawPathTiles(int x, int y, int tileType) async {
-    gridState[x][y] = tileType;
-    notifyListeners();
+    if (gridState[x][y] != 2 && gridState[x][y] != 3) {
+      gridState[x][y] = tileType;
+      notifyListeners();
+    }
   }
 
   void visualizeAstar() async {
@@ -81,6 +83,6 @@ class GridStateManager extends ChangeNotifier {
 
   void visualizeDijkstras() {
     Dijkstra d = new Dijkstra(this);
-    print(d.findPathFromGraph(d.parse(gridState)));
+    d.findPathFromGraph(d.parse(gridState));
   }
 }
