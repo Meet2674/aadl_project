@@ -5,6 +5,7 @@ import '../algorithms/a_star.dart';
 import 'dart:collection';
 import '../models/GridStateManagement.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 int gridHeight = 20;
 int gridWidth = 10;
@@ -18,7 +19,8 @@ List<Color> gridTileColors = [
   Colors.green,
   Colors.red,
   Colors.blue,
-  Colors.lightGreenAccent
+  Colors.lightGreenAccent,
+  Colors.amber,
 ];
 List<List<int>> gridState;
 
@@ -110,7 +112,15 @@ class _VisualizerMenuState extends State<VisualizerMenu> {
                 DropdownMenuItem(
                   child: Text('Dijkstra'),
                   value: 'Dijkstra',
-                )
+                ),
+                DropdownMenuItem(
+                  child: Text('BFS'),
+                  value: 'BFS',
+                ),
+                DropdownMenuItem(
+                  child: Text('DFS'),
+                  value: 'DFS',
+                ),
               ],
             ),
             margin: EdgeInsets.all(15.0),
@@ -234,12 +244,27 @@ class _VisualizerState extends State<Visualizer> {
                       child: RoundedButton(
                         title: 'Visualize!',
                         colour: Colors.lightBlueAccent,
-                        onPressed: () {
-                          if (algo == 'A*') {
-                            gridStateManager.visualizeAstar();
-                          } else {
-                            gridStateManager.visualizeDijkstras();
+                        onPressed: () async {
+                          switch (algo) {
+                            case 'A*':
+                              await gridStateManager.visualizeAstar();
+                              break;
+                            case 'Dijkstra':
+                              await gridStateManager.visualizeDijkstras();
+                              break;
+                            case 'BFS':
+                              gridStateManager.visualizeBFS();
+                              break;
+                            case 'DFS':
+                              gridStateManager.visualizeDFS();
+                              break;
+                            default:
+                              break;
                           }
+                          // if (algo == 'A*') {
+                          // } else {
+                          //   await gridStateManager.visualizeDijkstras();
+                          // }
                         },
                       ),
                     ),

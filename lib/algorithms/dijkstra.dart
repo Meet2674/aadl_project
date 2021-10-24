@@ -96,7 +96,9 @@ class Dijkstra {
       /// ...and explore the edges that connect u to those nodes, updating
       /// the cost of the shortest paths to any or all of those nodes as
       /// necessary. v is the node across the current edge from u.
-      (adjacentNodes /*as Map*/).forEach((v, value) {
+      (adjacentNodes /*as Map*/).forEach((v, value) async {
+        gridStateManager.drawPathTiles(v.x, v.y, 6);
+        await justWait(numberOfmilliSeconds: 25);
         gridStateManager.drawPathTiles(v.x, v.y, 5);
         if (adjacentNodes[v] != null) {
           /// Get the cost of the edge running from u to v.

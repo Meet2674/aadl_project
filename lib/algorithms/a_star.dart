@@ -151,7 +151,6 @@ void aStar2D(Maze maze, GridStateManager gridStateManager) async {
     open.removeAt(bestTileIndex);
 
     closed.add(currentTile);
-
     for (var newX = math.max(0, currentTile.x - 1);
         newX <= math.min(numColumns - 1, currentTile.x + 1);
         newX++) {
@@ -163,8 +162,9 @@ void aStar2D(Maze maze, GridStateManager gridStateManager) async {
                 (goal.x == newX && goal.y == newY)) &&
             (newX == currentTile.x || newY == currentTile.y)) {
           if (currentTile != maze.start) {
+            gridStateManager.drawPathTiles(currentTile.y, currentTile.x, 6);
+            await justWait(numberOfmilliSeconds: 1); // added to get slight lag
             gridStateManager.drawPathTiles(currentTile.y, currentTile.x, 5);
-            await justWait(numberOfmilliSeconds: 7); // added to get slight lag
           }
           // or the new node is our destination
           //See if the node is already in our closed list. If so, skip it.

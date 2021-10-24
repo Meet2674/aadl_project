@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../algorithms/a_star.dart';
 import '../algorithms/dijkstra.dart';
+import '../algorithms/bfs.dart';
+import '../algorithms/dfs.dart';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
@@ -84,5 +86,15 @@ class GridStateManager extends ChangeNotifier {
   void visualizeDijkstras() {
     Dijkstra d = new Dijkstra(this);
     d.findPathFromGraph(d.parse(gridState));
+  }
+
+  void visualizeBFS() {
+    BFS bfs = new BFS(this);
+    bfs.runBFS(bfs.parse(this.gridState));
+  }
+
+  void visualizeDFS() {
+    DFS dfs = new DFS(this);
+    dfs.runDFS(dfs.parse(this.gridState));
   }
 }
