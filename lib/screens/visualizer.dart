@@ -6,6 +6,7 @@ import 'dart:collection';
 import '../models/GridStateManagement.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
 int gridHeight = 20;
 int gridWidth = 10;
@@ -200,6 +201,15 @@ class _VisualizerState extends State<Visualizer> {
               title,
               style: TextStyle(color: Colors.black),
             ),
+            actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: TextButton(
+                  onPressed: () => onCustomizePressed(),
+                  child: Text("Customize"),
+                ),
+              )
+            ],
             backgroundColor: Colors.white,
           ),
           body: Column(children: [
@@ -285,5 +295,79 @@ class _VisualizerState extends State<Visualizer> {
         ),
       ),
     );
+  }
+
+  void onCustomizePressed() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ListTile(
+                title: Text('Empty Grid Cells'),
+                onTap: () => showcolorpicker(0),
+              ),
+              ListTile(
+                title: Text('Obstacles'),
+                onTap: () => showcolorpicker(1),
+              ),
+              ListTile(
+                title: Text('Start Node'),
+                onTap: () => showcolorpicker(2),
+              ),
+              ListTile(
+                title: Text('Stop Node'),
+                onTap: () => showcolorpicker(3),
+              ),
+              ListTile(
+                title: Text('Path'),
+                onTap: () => showcolorpicker(4),
+              ),
+              ListTile(
+                title: Text('Visited Nodes'),
+                onTap: () => showcolorpicker(5),
+              ),
+              ListTile(
+                title: Text('Current Nodes'),
+                onTap: () => showcolorpicker(6),
+              ),
+              ListTile(
+                title: Text('Reset to Default'),
+                onTap: () => {
+                  setState(() {
+                    gridTileColors[0] = Colors.white;
+                    gridTileColors[1] = Colors.black;
+                    gridTileColors[2] = Colors.green;
+                    gridTileColors[3] = Colors.red;
+                    gridTileColors[4] = Colors.blue;
+                    gridTileColors[5] = Colors.lightGreenAccent;
+                    gridTileColors[6] = Colors.amber;
+                  })
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showcolorpicker(int i) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text("Pick a color"),
+            children: <Widget>[
+              MaterialColorPicker(
+                onColorChange: (Color color) {
+                  setState(() {
+                    gridTileColors[i] = color;
+                  });
+                },
+                selectedColor: Colors.red,
+              )
+            ],
+          );
+        });
   }
 }
