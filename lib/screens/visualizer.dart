@@ -340,53 +340,58 @@ class _VisualizerState extends State<Visualizer> {
   }
 
   void onCustomizePressed() {
-    showModalBottomSheet(
+    showModalBottomSheet<dynamic>(
+        isScrollControlled: true,
         context: context,
         builder: (context) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              ListTile(
-                title: Text('Empty Grid Cells'),
-                onTap: () => showcolorpicker(0),
-              ),
-              ListTile(
-                title: Text('Obstacles'),
-                onTap: () => showcolorpicker(1),
-              ),
-              ListTile(
-                title: Text('Start Node'),
-                onTap: () => showcolorpicker(2),
-              ),
-              ListTile(
-                title: Text('Stop Node'),
-                onTap: () => showcolorpicker(3),
-              ),
-              ListTile(
-                title: Text('Path'),
-                onTap: () => showcolorpicker(4),
-              ),
-              ListTile(
-                title: Text('Visited Nodes'),
-                onTap: () => showcolorpicker(5),
-              ),
-              ListTile(
-                title: Text('Current Nodes'),
-                onTap: () => showcolorpicker(6),
-              ),
-              ListTile(
-                title: Text('Reset to Default'),
-                onTap: () => {
-                  setState(() {
-                    gridTileColors[0] = Colors.white;
-                    gridTileColors[1] = Colors.black;
-                    gridTileColors[2] = Colors.green;
-                    gridTileColors[3] = Colors.red;
-                    gridTileColors[4] = Colors.blue;
-                    gridTileColors[5] = Colors.lightGreenAccent;
-                    gridTileColors[6] = Colors.amber;
-                  })
-                },
+          return Wrap(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ListTile(
+                    title: Text('Empty Grid Cells'),
+                    onTap: () => showcolorpicker(0),
+                  ),
+                  ListTile(
+                    title: Text('Obstacles'),
+                    onTap: () => showcolorpicker(1),
+                  ),
+                  ListTile(
+                    title: Text('Start Node'),
+                    onTap: () => showcolorpicker(2),
+                  ),
+                  ListTile(
+                    title: Text('Stop Node'),
+                    onTap: () => showcolorpicker(3),
+                  ),
+                  ListTile(
+                    title: Text('Path'),
+                    onTap: () => showcolorpicker(4),
+                  ),
+                  ListTile(
+                    title: Text('Visited Nodes'),
+                    onTap: () => showcolorpicker(5),
+                  ),
+                  ListTile(
+                    title: Text('Current Nodes'),
+                    onTap: () => showcolorpicker(6),
+                  ),
+                  ListTile(
+                    title: Text('Reset to Default'),
+                    onTap: () => {
+                      setState(() {
+                        gridTileColors[0] = Colors.white;
+                        gridTileColors[1] = Colors.black;
+                        gridTileColors[2] = Colors.green;
+                        gridTileColors[3] = Colors.red;
+                        gridTileColors[4] = Colors.blue;
+                        gridTileColors[5] = Colors.lightGreenAccent;
+                        gridTileColors[6] = Colors.amber;
+                      })
+                    },
+                  ),
+                ],
               ),
             ],
           );
