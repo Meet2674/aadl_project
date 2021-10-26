@@ -125,7 +125,7 @@ class FWarshall {
       for (var adjnode in graph[curr]) {
         if (!path.contains(adjnode)) {
           gridStateManager.drawPathTiles(adjnode.x, adjnode.y, 5);
-          await justWait(numberOfmilliSeconds: 1000);
+          await justWait(numberOfmilliSeconds: 100000);
         }
         if (weight[start][adjnode] < mincost) {
           curr = adjnode;
@@ -134,7 +134,7 @@ class FWarshall {
       }
       path.add(curr);
       gridStateManager.drawPathTiles(curr.x, curr.y, 4);
-      await justWait(numberOfmilliSeconds: 1000);
+      await justWait(numberOfmilliSeconds: 100000);
     }
 
     // var dist = [];
