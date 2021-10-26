@@ -4,6 +4,8 @@ import '../algorithms/a_star.dart';
 import '../algorithms/dijkstra.dart';
 import '../algorithms/bfs.dart';
 import '../algorithms/dfs.dart';
+import '../algorithms/bellman-ford.dart';
+import '../algorithms/floyd-warshall.dart';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
@@ -63,7 +65,7 @@ class GridStateManager extends ChangeNotifier {
   }
 
   void drawPathTiles(int x, int y, int tileType) async {
-    if (gridState[x][y] != 2 && gridState[x][y] != 3) {
+    if (gridState[x][y] != 2 && gridState[x][y] != 3 && gridState[x][y] != 1) {
       gridState[x][y] = tileType;
       notifyListeners();
     }
@@ -96,5 +98,17 @@ class GridStateManager extends ChangeNotifier {
   void visualizeDFS() {
     DFS dfs = new DFS(this);
     dfs.runDFS(dfs.parse(this.gridState));
+  }
+
+  void visualizeBFord() {
+    BFord bford = new BFord(this);
+    bford.fillEdges(bford.parse(this.gridState));
+    bford.bellmanFordShortestDistances();
+  }
+
+  void visualizeFWarshall() {
+    FWarshall fWarshall = new FWarshall(gridHeight, gridWidth, this);
+    fWarshall.parse(gridState);
+    fWarshall.floydwarshall();
   }
 }
