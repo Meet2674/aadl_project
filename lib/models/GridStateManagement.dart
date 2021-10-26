@@ -23,7 +23,7 @@ class GridStateManager extends ChangeNotifier {
     }
   }
 
-  void updateGridTileState(int x, int y, int tileType) {
+  int updateGridTileState(int x, int y, int tileType) {
     print('x = $x ,y = $y was tapped');
     if (gridState[x][y] == 2 && tileType == 0 || tileType == 1) {
       startDefined = false;
@@ -33,8 +33,9 @@ class GridStateManager extends ChangeNotifier {
     }
     if (startDefined && tileType == 2) {
       print('Can\'t have multiple start nodes');
+      return 2;
     } else if (stopDefined && tileType == 3) {
-      print('Can\'t have multiple stop nodes');
+      return 3;
     } else {
       if (tileType == 2) {
         if (gridState[x][y] == 3) {
@@ -50,6 +51,7 @@ class GridStateManager extends ChangeNotifier {
       }
       gridState[x][y] = tileType;
       notifyListeners();
+      return 1;
     }
   }
 
