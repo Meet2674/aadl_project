@@ -7,6 +7,7 @@ import '../models/GridStateManagement.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 int gridHeight = 20;
 int gridWidth = 10;
@@ -62,7 +63,32 @@ class _GridTileState extends State<GridTile> {
       builder: (context, gridStateManager, child) {
         return GestureDetector(
           onTap: () {
-            gridStateManager.updateGridTileState(x1, y1, tileType);
+            int c;
+            c = gridStateManager.updateGridTileState(x1, y1, tileType);
+            switch (c) {
+              case 2:
+                Fluttertoast.showToast(
+                    msg: "Cannot have multiple start nodes",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+                break;
+              case 3:
+                Fluttertoast.showToast(
+                    msg: "Cannot have multiple stop nodes",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+                break;
+              default:
+                break;
+            }
           },
           child: Container(
             decoration: BoxDecoration(
